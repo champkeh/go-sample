@@ -1,6 +1,6 @@
 # go-sample
 
-本项目用于收集一些常用的go代码段，以及自己写的一些代码样例
+本项目用于收集一些常用的go代码段，以及自己写的一些代码样例
 
 - [spinner](./spinner) 命令行下面常见的等待动画
 - [icmp](./icmp) 实现了icmp协议的echo操作(ping命令)
@@ -48,12 +48,20 @@ if msg[n+7] == 37 {
 }
 ```
 
-### 5. run snapshot(win)
+### 5. run snapshot
+win:
 ![run](./asserts/snapshot/win/run.png)
+
+mac:
+![run](./asserts/snapshot/mac/run.png)
 
 
 ### 6. wiresharp snapshot
+win:
 ![send](./asserts/snapshot/win/send.png)
 ![recv](./asserts/snapshot/win/recv.png)
 
+mac:
+![send](./asserts/snapshot/mac/send.png)
+![recv](./asserts/snapshot/mac/recv.png)
 
