@@ -25,17 +25,17 @@ func main() {
 	var msg [512]byte
 	msg[0] = 8    // type
 	msg[1] = 0    // code
-	msg[2] = 0xf7 // checksum, fix later, 此处直接使用正确的checksum
-	msg[3] = 0xcd // checksume, fix later, 此处直接使用正确的checksum
+	msg[2] = 0    // checksum, fix later
+	msg[3] = 0    // checksume, fix later
 	msg[4] = 0    // identifier[0]
-	msg[5] = 13   // identifier[1]
+	msg[5] = 14   // identifier[1]
 	msg[6] = 0    // sequence[0]
-	msg[7] = 37   // sequence[1]
+	msg[7] = 237  // sequence[1]
 	len := 8
 
-	//sum := checkSum(msg[0:len])
-	//msg[2] = byte(sum >> 8)
-	//msg[3] = byte(sum & 255)
+	sum := checkSum(msg[0:len])
+	msg[2] = byte(sum >> 8)
+	msg[3] = byte(sum & 255)
 
 	_, err = conn.Write(msg[0:len])
 	checkError(err)
@@ -49,10 +49,10 @@ func main() {
 	if n >= 8 {
 		n -= 8
 	}
-	if msg[n+5] == 13 {
+	if msg[n+5] == 14 {
 		fmt.Println("identifier matches")
 	}
-	if msg[n+7] == 37 {
+	if msg[n+7] == 237 {
 		fmt.Println("Sequence matches")
 	}
 
@@ -60,17 +60,22 @@ func main() {
 }
 
 // 计算checksum
-// note: 算法好像有问题，计算的结果不正确
-func checkSum(msg []byte) uint16 {
-	sum := 0
-
-	for n := 1; n < len(msg)-1; n += 2 {
-		sum += int(msg[n])*256 + int(msg[n+1])
+func checkSum(data []byte) uint16 {
+	var (
+		sum    uint32
+		length = len(data)
+		index  int
+	)
+	for length > 1 {
+		sum += uint32(data[index])<<8 + uint32(data[index+1])
+		index += 2
+		length -= 2
 	}
-	sum = (sum >> 16) + (sum & 0xffff)
+	if length > 0 {
+		sum += uint32(data[index])
+	}
 	sum += (sum >> 16)
-	var answer = uint16(^sum)
-	return answer
+	return uint16(^sum)
 }
 
 func checkError(err error) {
